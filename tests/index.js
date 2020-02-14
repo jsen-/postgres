@@ -549,6 +549,20 @@ t('listen and notify with weird name', async() => {
   )]
 })
 
+ot('listen reconnects', async () => {
+  const listener = postgres(options)
+      , xs = []
+
+  const { state: { pid } } = await listener.listen('test', x => xs.push(x))
+  await sql.notify('test', 'a')
+  await sql`select pg_terminate_backend(${ pid }::int)`
+  await new Promise(r => setTimeout(r, 50))
+  await sql.notify('test', 'b')
+  await new Promise(r => setTimeout(r, 50))
+
+  return ['ab', xs.join('')]
+})
+
 t('responds with server parameters (application_name)', async() =>
   ['postgres.js', await new Promise((resolve, reject) => postgres({
     ...options,
