@@ -4,7 +4,8 @@ const { t, not, ot } = require('./test.js') // eslint-disable-line
 const cp = require('child_process')
 const path = require('path')
 
-const postgres = require('../lib')
+/** @type {import('../types')} */
+const postgres = require('..')
 
 const login = {
   user: 'postgres_js_test'
